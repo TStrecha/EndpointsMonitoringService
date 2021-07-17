@@ -1,11 +1,9 @@
 package io.dxheroes.endpointsmonitoringservice.integration;
 
 import io.dxheroes.endpointsmonitoringservice.constant.Status;
-import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.EntityNotFoundException;
 import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.ValidationErrorConstants;
 import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.ValidationException;
 import io.dxheroes.endpointsmonitoringservice.dto.MonitoredEndpointDTO;
-import io.dxheroes.endpointsmonitoringservice.dto.MonitoringResultDTO;
 import io.dxheroes.endpointsmonitoringservice.dto.UserDTO;
 import io.dxheroes.endpointsmonitoringservice.dto.ValidationErrorDTO;
 import io.dxheroes.endpointsmonitoringservice.entity.MonitoredEndpointEntity;
@@ -19,9 +17,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 

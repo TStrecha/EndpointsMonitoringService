@@ -2,7 +2,6 @@ package io.dxheroes.endpointsmonitoringservice.controller.v1;
 
 import io.dxheroes.endpointsmonitoringservice.Utils;
 import io.dxheroes.endpointsmonitoringservice.dto.MonitoredEndpointDTO;
-import io.dxheroes.endpointsmonitoringservice.dto.MonitoringResultDTO;
 import io.dxheroes.endpointsmonitoringservice.dto.StatusDTO;
 import io.dxheroes.endpointsmonitoringservice.service.MonitoredEndpointService;
 import io.swagger.annotations.ApiOperation;
