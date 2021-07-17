@@ -28,7 +28,7 @@ public class MonitoringEndpointController {
     }
 
     @DeleteMapping("/{monitored-endpoint-id}")
-    @ApiOperation(value = "Delete monitored endpoint", notes = "Deletes monitored endpoint that is linked with user according to the  access token.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Delete monitored endpoint", notes = "Deletes monitored endpoint that is linked with user according to the  access token. It will also delete all the result of that monitored endpoint.", produces = MediaType.APPLICATION_JSON_VALUE)
     public StatusDTO deleteMonitoredEndpoint(@PathVariable("monitored-endpoint-id") Long monitoredEndpointId, @RequestHeader("access-token") String accessToken){
         Utils.validateAccessToken(accessToken);
 

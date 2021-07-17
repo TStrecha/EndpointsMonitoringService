@@ -1,5 +1,6 @@
 package io.dxheroes.endpointsmonitoringservice.service;
 
+import io.dxheroes.endpointsmonitoringservice.constant.Status;
 import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.ValidationErrorConstants;
 import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.ValidationException;
 import io.dxheroes.endpointsmonitoringservice.dto.MonitoringResultDTO;
@@ -47,7 +48,7 @@ public class MonitoringResultService {
         this.monitoringResultRepository = monitoringResultRepository;
         this.monitoringResultMapper = monitoringResultMapper;
 
-        for(MonitoredEndpointEntity monitoredEndpointEntity : monitoredEndpointRepository.findAll()){
+        for(MonitoredEndpointEntity monitoredEndpointEntity : monitoredEndpointRepository.getALlByStatus(Status.ACTIVE)){
             startTask(monitoredEndpointEntity);
         }
     }
@@ -63,7 +64,12 @@ public class MonitoringResultService {
     }
 
     public void stopTask(Long monitoredEndpointId) {
-        tasks.get(monitoredEndpointId).cancel(false);
+        ScheduledFuture task = tasks.get(monitoredEndpointId);
+        //This can happen in tests. Tests sometimes save entities into database directly, so the task doesn't start.
+        if(task == null){
+            return;
+        }
+        task.cancel(false);
         tasks.remove(monitoredEndpointId);
     }
 

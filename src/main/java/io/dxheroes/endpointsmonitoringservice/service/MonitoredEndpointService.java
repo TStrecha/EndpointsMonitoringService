@@ -1,6 +1,7 @@
 package io.dxheroes.endpointsmonitoringservice.service;
 
 import io.dxheroes.endpointsmonitoringservice.Utils;
+import io.dxheroes.endpointsmonitoringservice.constant.Status;
 import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.EntityNotFoundException;
 import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.ValidationErrorConstants;
 import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.ValidationException;
@@ -57,8 +58,9 @@ public class MonitoredEndpointService {
         monitoredEndpoint.setId(null);
         monitoredEndpoint.setOwner(userEntityOptional.get());
         MonitoredEndpointEntity saved = monitoredEndpointRepository.save(monitoredEndpoint);
-
-        monitoringResultService.startTask(saved);
+        if(saved.getStatus() == Status.ACTIVE){
+            monitoringResultService.startTask(saved);
+        }
 
         return monitoredEndpointMapper.toDTO(saved);
     }
@@ -122,13 +124,19 @@ public class MonitoredEndpointService {
 
         validateMonitoredEndpoint(monitoredEndpointDTO);
 
+        if(!entity.getUrl().equals(monitoredEndpointDTO.getUrl()) && monitoredEndpointDTO.getStatus() == Status.ACTIVE){
+            monitoringResultService.stopTask(entity);
+            monitoringResultService.startTask(entity);
+        } else if(monitoredEndpointDTO.getStatus() == Status.INACTIVE){
+            monitoringResultService.stopTask(entity);
+        } else if(monitoredEndpointDTO.getStatus() == Status.ACTIVE && entity.getStatus() == Status.INACTIVE){
+            monitoringResultService.startTask(entity);
+        }
+
         entity.setMonitoredInterval(monitoredEndpointDTO.getMonitoredIntervalInMillis());
         entity.setName(monitoredEndpointDTO.getName());
         entity.setUrl(monitoredEndpointDTO.getUrl());
-        if(!entity.getUrl().equals(monitoredEndpointDTO.getUrl())){
-            monitoringResultService.stopTask(entity);
-            monitoringResultService.startTask(entity);
-        }
+        entity.setStatus(monitoredEndpointDTO.getStatus());
 
         MonitoredEndpointEntity saved = monitoredEndpointRepository.save(entity);
 

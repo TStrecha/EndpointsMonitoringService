@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.PersistenceContext;
@@ -30,13 +32,20 @@ public class MonitoringResultThread implements Runnable{
         resultEntity.setDateOfCheck(OffsetDateTime.now());
         monitoredEndpointEntity.setDateOfLastCheck(OffsetDateTime.now());
 
-        ResponseEntity<String> response = this.restTemplate.getForEntity(monitoredEndpointEntity.getUrl(), String.class);
+        try{
+
+            ResponseEntity<String> response = this.restTemplate.getForEntity(monitoredEndpointEntity.getUrl(), String.class);
+            resultEntity.setHttpStatusCode(response.getStatusCodeValue());
+            resultEntity.setPayload(response.getBody());
+        } catch(HttpStatusCodeException ex){
+            resultEntity.setHttpStatusCode(ex.getRawStatusCode());
+            resultEntity.setPayload(ex.getResponseBodyAsString());
+        }
 
         resultEntity.setMonitoredEndpoint(monitoredEndpointEntity);
-        resultEntity.setHttpStatusCode(response.getStatusCodeValue());
-        resultEntity.setPayload(response.getBody());
 
-  //      monitoredEndpointRepository.save(monitoredEndpointEntity);
-//        monitoringResultRepository.save(resultEntity);
+
+        monitoredEndpointRepository.save(monitoredEndpointEntity);
+        monitoringResultRepository.save(resultEntity);
     }
 }

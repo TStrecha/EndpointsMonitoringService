@@ -13,11 +13,13 @@ public class MonitoringResultEntity {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private OffsetDateTime dateOfCheck;
 
+    @Column(nullable = false)
     private Integer httpStatusCode;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String payload;
 
     @ManyToOne

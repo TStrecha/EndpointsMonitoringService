@@ -1,9 +1,11 @@
 package io.dxheroes.endpointsmonitoringservice.integration;
 
+import io.dxheroes.endpointsmonitoringservice.constant.Status;
 import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.EntityNotFoundException;
 import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.ValidationErrorConstants;
 import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.ValidationException;
 import io.dxheroes.endpointsmonitoringservice.dto.MonitoredEndpointDTO;
+import io.dxheroes.endpointsmonitoringservice.dto.MonitoringResultDTO;
 import io.dxheroes.endpointsmonitoringservice.dto.UserDTO;
 import io.dxheroes.endpointsmonitoringservice.dto.ValidationErrorDTO;
 import io.dxheroes.endpointsmonitoringservice.entity.MonitoredEndpointEntity;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -119,16 +122,18 @@ public class BasicIntegrationTest {
         MonitoredEndpointDTO monitoredEndpointDTO = new MonitoredEndpointDTO();
         monitoredEndpointDTO.setName("Test endpoint");
         monitoredEndpointDTO.setUrl("http://www.example.com");
+        monitoredEndpointDTO.setStatus(Status.ACTIVE);
         monitoredEndpointDTO.setMonitoredIntervalInMillis(30 * 1000);
 
-        monitoredEndpointDTO = monitoredEndpointService.createMonitoredEndpoint(monitoredEndpointDTO, ACCESS_TOKEN);
+        MonitoredEndpointDTO result = monitoredEndpointService.createMonitoredEndpoint(monitoredEndpointDTO, ACCESS_TOKEN);
 
-        assertNotNull(monitoredEndpointDTO.getId());
-        assertNotNull(monitoredEndpointDTO.getOwner());
-        assertEquals(monitoredEndpointDTO.getOwner().getAccessToken(), ACCESS_TOKEN);
-        assertEquals(monitoredEndpointDTO.getUrl(), monitoredEndpointDTO.getUrl());
-        assertEquals(monitoredEndpointDTO.getMonitoredIntervalInMillis(), monitoredEndpointDTO.getMonitoredIntervalInMillis());
-        assertEquals(monitoredEndpointDTO.getName(), monitoredEndpointDTO.getName());
+        assertNotNull(result.getId());
+        assertNotNull(result.getOwner());
+        assertEquals(result.getOwner().getAccessToken(), ACCESS_TOKEN);
+        assertEquals(result.getUrl(), monitoredEndpointDTO.getUrl());
+        assertEquals(result.getMonitoredIntervalInMillis(), monitoredEndpointDTO.getMonitoredIntervalInMillis());
+        assertEquals(result.getName(), monitoredEndpointDTO.getName());
+        assertEquals(result.getStatus(), monitoredEndpointDTO.getStatus());
         assertEquals(taskCount + 1, monitoredEndpointService.getMonitoringResultService().getTasks().size());
         taskCount = monitoredEndpointService.getMonitoringResultService().getTasks().size();
     }
@@ -163,17 +168,18 @@ public class BasicIntegrationTest {
         MonitoredEndpointDTO monitoredEndpointDTO = new MonitoredEndpointDTO();
         monitoredEndpointDTO.setName("Test endpoint edited");
         monitoredEndpointDTO.setUrl("https://reqres.in/api/unknown/2");
+        monitoredEndpointDTO.setStatus(Status.INACTIVE);
         monitoredEndpointDTO.setMonitoredIntervalInMillis(50 * 1000);
 
-        monitoredEndpointDTO = monitoredEndpointService.editMonitoredEndpoint(monitoredEndpointEntity.getId(), monitoredEndpointDTO, ACCESS_TOKEN);
+        MonitoredEndpointDTO result = monitoredEndpointService.editMonitoredEndpoint(monitoredEndpointEntity.getId(), monitoredEndpointDTO, ACCESS_TOKEN);
 
-        assertNotNull(monitoredEndpointDTO.getId());
-        assertNotNull(monitoredEndpointDTO.getOwner());
-        assertEquals(monitoredEndpointDTO.getOwner().getAccessToken(), ACCESS_TOKEN);
-        assertEquals(monitoredEndpointDTO.getUrl(), monitoredEndpointDTO.getUrl());
-        assertEquals(monitoredEndpointDTO.getMonitoredIntervalInMillis(), monitoredEndpointDTO.getMonitoredIntervalInMillis());
-        assertEquals(monitoredEndpointDTO.getName(), monitoredEndpointDTO.getName());
-        assertEquals(taskCount, monitoredEndpointService.getMonitoringResultService().getTasks().size());
+        assertNotNull(result.getId());
+        assertNotNull(result.getOwner());
+        assertEquals(result.getOwner().getAccessToken(), ACCESS_TOKEN);
+        assertEquals(result.getUrl(), monitoredEndpointDTO.getUrl());
+        assertEquals(result.getMonitoredIntervalInMillis(), monitoredEndpointDTO.getMonitoredIntervalInMillis());
+        assertEquals(result.getName(), monitoredEndpointDTO.getName());
+        assertEquals(result.getStatus(), monitoredEndpointDTO.getStatus());
     }
 
     @Test
@@ -195,7 +201,6 @@ public class BasicIntegrationTest {
             failed = true;
         }
         assertTrue(failed);
-        assertEquals(taskCount, monitoredEndpointService.getMonitoringResultService().getTasks().size());
     }
 
     @Test
@@ -223,7 +228,7 @@ public class BasicIntegrationTest {
     private MonitoredEndpointEntity createMonitoredEndpoint(){
         MonitoredEndpointEntity monitoredEndpointEntity = new MonitoredEndpointEntity();
         monitoredEndpointEntity.setName("Test endpoint edited");
-        monitoredEndpointEntity.setUrl("https://reqres.in/api/unknown/2");
+        monitoredEndpointEntity.setUrl("http://worldtimeapi.org/api/timezone/Europe/Prague");
         monitoredEndpointEntity.setMonitoredInterval(50 * 1000);
         monitoredEndpointEntity.setOwner(createUser());
 

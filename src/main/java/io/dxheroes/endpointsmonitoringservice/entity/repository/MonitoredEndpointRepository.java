@@ -1,5 +1,6 @@
 package io.dxheroes.endpointsmonitoringservice.entity.repository;
 
+import io.dxheroes.endpointsmonitoringservice.constant.Status;
 import io.dxheroes.endpointsmonitoringservice.entity.MonitoredEndpointEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +16,6 @@ public interface MonitoredEndpointRepository extends JpaRepository<MonitoredEndp
 
     @Query("SELECT me FROM MonitoredEndpoint me WHERE me.owner.accessToken = :accessToken")
     List<MonitoredEndpointEntity> getAllForAccessToken(String accessToken);
+
+    List<MonitoredEndpointEntity> getALlByStatus(Status status);
 }

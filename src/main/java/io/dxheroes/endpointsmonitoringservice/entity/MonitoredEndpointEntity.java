@@ -1,5 +1,6 @@
 package io.dxheroes.endpointsmonitoringservice.entity;
 
+import io.dxheroes.endpointsmonitoringservice.constant.Status;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -23,12 +24,16 @@ public class MonitoredEndpointEntity {
     private String url;
 
     @CreationTimestamp
+    @Column(nullable = false)
     private OffsetDateTime dateOfCreation;
 
     private OffsetDateTime dateOfLastCheck;
 
     @Column(nullable = false)
     private Integer monitoredInterval;
+
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.ACTIVE;
 
     @ManyToOne
     private UserEntity owner;

@@ -10,6 +10,11 @@ Last but not least make sure that port `8080` isn't taken by another application
 
 If you have all this, you can run the main class `/src/main/java/io.dxheroes.endpointsmonitoringservice/EndpointsMonitoringService.java` or in root directory call `mvn spring-boot:run` command.
 
+### Running in docker
+To run the service in a docker, make sure you have a mysql container running in your docker. Then run `mvn clean package`. This will create a `.jar` executable file in the target directory.
+
+Now you can proceed to run a command `docker build -t endpoints-monitoring-service .` in the root directory of the service. This will build a new image called `endpoints-monitoring-service`. Now, simply start the container using command `docker run -dp 3000:3000 endpoints-monitoring-service` and the application should be available at your docker ip on port `3000`. Feel free to change the port of the docker container to your needs.
+
 ## Testing
 Once you have run the service, the swagger should be available in a browser at [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html).
 

@@ -35,6 +35,9 @@ databaseChangeLog:
         - column:
             name: owner_id
             type: BIGINT
+        - column:
+              name: status
+              type: VARCHAR(255)
         tableName: monitored_endpoint
 - changeSet:
     id: 0001-basic-data-model-2
