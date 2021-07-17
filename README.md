@@ -36,6 +36,9 @@ If you have changed an entity, run `mvn liquibase:generateChangeLog` to generate
 ### Adding new features
 If you have added a new feature, please make a Unit test to test this feature. Make a few test cases in which at least one will succeed and one will fail on purpose. Also, make sure all test including the previous ones do work by running `mvn test`. If not, change previous tests to make them work.
 
+### Validation
+For validation of entities or DTOs, please use the `ValidationErrorDTO` class. Do not validate through Spring annotations. The `ValidationErrorDTO` class ensures that every validation failure will throw the same error and provide more information for the client than a normal Spring annotation would.
+
 ### Changing pom
 If you have changed `pom.xml` run `mvn dependency:analyze` to list unused dependencies. Look through that list and remove those dependencies that are not needed.
 
