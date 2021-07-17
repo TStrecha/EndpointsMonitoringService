@@ -18,6 +18,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,5 +97,20 @@ public class MonitoringResultService {
 
         return monitoringResultRepository.getAllForMonitoredEndpointLimited(monitoredEndpointId, PageRequest.of(0, count))
         .stream().map(monitoringResultMapper::toDTO).collect(Collectors.toList());
+    }
+
+    public List<MonitoringResultDTO> getMonitoringResultsWithinAnInterval(Long monitoredEndpointId, OffsetDateTime from, OffsetDateTime to, String accessToken) {
+        MonitoredEndpointEntity entity = monitoredEndpointRepository.getForAccessToken(monitoredEndpointId, accessToken);
+
+        if(entity == null){
+            ValidationErrorDTO validationErrorDTO = ValidationErrorDTO.builder().propertyPath("monitoredEndpointId")
+                    .invalidValue(monitoredEndpointId)
+                    .errorCode(ValidationErrorConstants.NO_ENTITY_FOUND_FOR_ACCESS_TOKEN).build();
+            throw new ValidationException(validationErrorDTO);
+        }
+
+        return monitoringResultRepository.getByDateOfCheckAfterAndDateOfCheckBefore(from, to)
+                .stream().map(monitoringResultMapper::toDTO).collect(Collectors.toList());
+
     }
 }
