@@ -31,5 +31,8 @@ Have you changed entity? Run `mvn liquibase:generateChangeLog` to generate the d
 ### Adding new features
 If you have added a new feature, please make a Unit test to test this feature. Make few test cases in which at least one will succeed and one will fail on purpose. Also, make sure all test including the previous ones do work by running `mvn test`. If not, change previous tests to make them work.
 
+### Changing pom
+If you have changed `pom.xml` run `mvn dependency:analyze` to list unused dependencies. Look through that list and remove those dependencies that are not needed.
+
 ### Changing the port
 If you have changed the port in `src/main/resources/application.yaml`, change it back to `8080`.
