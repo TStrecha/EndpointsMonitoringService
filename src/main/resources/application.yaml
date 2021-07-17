@@ -1,6 +1,6 @@
 # db
 spring.datasource:
-  url: jdbc:mysql://192.168.0.102/endpointsmonitoringservice?serverTimezone=UTC
+  url: jdbc:mysql://localhost/endpointsmonitoringservice?serverTimezone=UTC
   username: @appName@
   password: y%v2K?J~P}4rcYM$
   driver-class-name: com.mysql.jdbc.Driver
