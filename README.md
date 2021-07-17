@@ -27,7 +27,7 @@ First of all you need to create user. The endpoint `POST /v1/user` allows you to
 
 To create a monitored endpoint, use `POST /v1/monitored-endpoint` and pass the access token of user. The user has to exist. Keep in mind that everytime you work with this monitored endpoint only the user who created it has access to it.
 
-Once monitored endpoint is created, the service will keep connecting on the url specified when creating/updating monitored endpoint. To get these results, use `/v1/monitoring-result/last/{count}/for/{monitored-endpoint-id}` to get the last few results. In the path variable you decide how many results you want to be returned.
+Once monitored endpoint is created, the service will keep connecting on the url specified when creating/updating monitored endpoint. This will happen only when status of the monitored endpoint is set to `ACTIVE`. To get these results, use `/v1/monitoring-result/last/{count}/for/{monitored-endpoint-id}` to get the last few results. In the path variable you decide how many results you want to be returned.
 
 ## Contribution
 ### Entities
