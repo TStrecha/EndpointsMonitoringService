@@ -1,4 +1,6 @@
 # EndpointsMonitoringService
+This service is used to create monitored endpoints with specific URL and interval. The service apon monitored endpoint creation or startup of the service will within the interval keep connecting onto every URL and store the results such as payload and HTTP code.
+
 ## Running the project
 As IDE, Intellij IDEA is recommended. Start by cloning the repository with `git clone https://github.com/TStrecha/EndpointsMonitoringService`.
 
