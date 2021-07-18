@@ -23,9 +23,9 @@ Swagger will show you all the endpoints available and will suggest the structure
 You can also test the service through other applications for REST API, but I really suggest using Swagger as it is optimized to show you everything you need to pass to the request.
 
 ## Using the service
-First of all you need to create user. The endpoint `POST /v1/user` allows you to create user with their username, email and **access token**. Access token has to be a UUID and is not a mandatory attribute in the user creation endpoint. If you don't pass an access token, the code will automatically generate one for you. Remember to note down the access token - it is the only way to authorize the user in other endpoints. 
+First of all you need to create user. The endpoint `POST /v1/user` allows you to create user with their username, email and **access token**. Access token has to be a UUID and is not a mandatory attribute in the user creation endpoint. If you don't pass an access token, the service will automatically generate one for you. Remember to note down the access token - it is the only way to authorize the user in other endpoints. 
 
-To create a monitored endpoint, use `POST /v1/monitored-endpoint` and pass the access token of user. The user has to exist. Keep in mind that everytime you work with this monitored endpoint only the user who created it has access to it.
+To create a monitored endpoint, use `POST /v1/monitored-endpoint` and pass the access token of user in the header. The user has to exist. Keep in mind that everytime you work with this monitored endpoint only the user who created it has access to it.
 
 Once monitored endpoint is created, the service will keep connecting on the url specified when creating/updating monitored endpoint. This will happen only when status of the monitored endpoint is set to `ACTIVE`. To get these results, use `/v1/monitoring-result/last/{count}/for/{monitored-endpoint-id}` to get the last few results. In the path variable you decide how many results you want to be returned.
 
@@ -37,7 +37,7 @@ If you have changed an entity, run `mvn liquibase:generateChangeLog` to generate
 If you have added a new feature, please make a Unit test to test this feature. Make a few test cases in which at least one will succeed and one will fail on purpose. Also, make sure all test including the previous ones do work by running `mvn test`. If not, change previous tests to make them work.
 
 ### Validation
-In terms of validation of entities or DTOs, please use the `ValidationErrorDTO` class. Do not validate through Spring annotations. The `ValidationErrorDTO` class ensures that every validation failure will throw the same error and provide more information for the client than a normal Spring annotation would.
+In terms of validation of entities or DTOs, please use the `ValidationErrorDTO` class. Do not validate through Spring annotations. The `ValidationErrorDTO` class ensures that every validation failure will throw the same error and will provide more information for the client than a normal Spring annotation would.
 
 ### Changing pom
 If you have changed `pom.xml` run `mvn dependency:analyze` to list unused dependencies. Look through that list and remove those dependencies that are not needed.
