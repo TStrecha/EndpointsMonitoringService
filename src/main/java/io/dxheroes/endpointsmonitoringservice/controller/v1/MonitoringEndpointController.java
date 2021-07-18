@@ -1,6 +1,7 @@
 package io.dxheroes.endpointsmonitoringservice.controller.v1;
 
 import io.dxheroes.endpointsmonitoringservice.Utils;
+import io.dxheroes.endpointsmonitoringservice.constant.ControllerConstants;
 import io.dxheroes.endpointsmonitoringservice.dto.MonitoredEndpointDTO;
 import io.dxheroes.endpointsmonitoringservice.dto.StatusDTO;
 import io.dxheroes.endpointsmonitoringservice.service.MonitoredEndpointService;
@@ -20,7 +21,7 @@ public class MonitoringEndpointController {
 
     @PostMapping
     @ApiOperation(value = "Create monitored endpoint", notes = "Creates monitored endpoint linked with user according to the  access token.", produces = MediaType.APPLICATION_JSON_VALUE)
-    public MonitoredEndpointDTO createMonitoredEndpoint(@RequestBody MonitoredEndpointDTO monitoredEndpointDTO, @RequestHeader("access-token") String accessToken){
+    public MonitoredEndpointDTO createMonitoredEndpoint(@RequestBody MonitoredEndpointDTO monitoredEndpointDTO, @RequestHeader(ControllerConstants.ACCESS_TOKEN_HEADER_NAME) String accessToken){
         Utils.validateAccessToken(accessToken);
 
         return monitoredEndpointService.createMonitoredEndpoint(monitoredEndpointDTO, accessToken);
@@ -28,7 +29,7 @@ public class MonitoringEndpointController {
 
     @DeleteMapping("/{monitored-endpoint-id}")
     @ApiOperation(value = "Delete monitored endpoint", notes = "Deletes monitored endpoint that is linked with user according to the  access token. It will also delete all the result of that monitored endpoint.", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StatusDTO deleteMonitoredEndpoint(@PathVariable("monitored-endpoint-id") Long monitoredEndpointId, @RequestHeader("access-token") String accessToken){
+    public StatusDTO deleteMonitoredEndpoint(@PathVariable("monitored-endpoint-id") Long monitoredEndpointId, @RequestHeader(ControllerConstants.ACCESS_TOKEN_HEADER_NAME) String accessToken){
         Utils.validateAccessToken(accessToken);
 
         return monitoredEndpointService.deleteMonitoredEndpoint(monitoredEndpointId, accessToken);
@@ -36,7 +37,7 @@ public class MonitoringEndpointController {
 
     @GetMapping
     @ApiOperation(value = "Get monitored endpoints", notes = "Gets all monitored endpoints that are linked with user according to the  access token.", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<MonitoredEndpointDTO> getMonitoredEndpointsForAccessToken(@RequestHeader("access-token") String accessToken){
+    public List<MonitoredEndpointDTO> getMonitoredEndpointsForAccessToken(@RequestHeader(ControllerConstants.ACCESS_TOKEN_HEADER_NAME) String accessToken){
         Utils.validateAccessToken(accessToken);
 
         return monitoredEndpointService.getMonitoredEndpointsForAccessToken(accessToken);
@@ -44,7 +45,7 @@ public class MonitoringEndpointController {
 
     @PutMapping("/{monitored-endpoint-id}")
     @ApiOperation(value = "Edit monitored endpoint", notes = "Edits monitored endpoints that is linked with user according to the access token.", produces = MediaType.APPLICATION_JSON_VALUE)
-    public MonitoredEndpointDTO editMonitoredEndpoint(@PathVariable("monitored-endpoint-id") Long monitoredEndpointId, @RequestBody MonitoredEndpointDTO monitoredEndpointDTO, @RequestHeader("access-token") String accessToken){
+    public MonitoredEndpointDTO editMonitoredEndpoint(@PathVariable("monitored-endpoint-id") Long monitoredEndpointId, @RequestBody MonitoredEndpointDTO monitoredEndpointDTO, @RequestHeader(ControllerConstants.ACCESS_TOKEN_HEADER_NAME) String accessToken){
         Utils.validateAccessToken(accessToken);
 
         return monitoredEndpointService.editMonitoredEndpoint(monitoredEndpointId, monitoredEndpointDTO, accessToken);

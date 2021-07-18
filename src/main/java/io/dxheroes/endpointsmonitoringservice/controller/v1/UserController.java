@@ -1,6 +1,7 @@
 package io.dxheroes.endpointsmonitoringservice.controller.v1;
 
 import io.dxheroes.endpointsmonitoringservice.Utils;
+import io.dxheroes.endpointsmonitoringservice.constant.ControllerConstants;
 import io.dxheroes.endpointsmonitoringservice.dto.UserDTO;
 import io.dxheroes.endpointsmonitoringservice.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +34,7 @@ public class UserController {
 
     @PutMapping
     @ApiOperation(value = "Edits user", notes = "Edits a user based on access token. The access token in userDTO and in the header have to match.", produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserDTO editUser(@RequestBody UserDTO userDTO, @RequestHeader("access-token") String accessToken){
+    public UserDTO editUser(@RequestBody UserDTO userDTO, @RequestHeader(ControllerConstants.ACCESS_TOKEN_HEADER_NAME) String accessToken){
         Utils.validateAccessToken(accessToken);
         Utils.validateAccessToken(userDTO.getAccessToken(), userDTO.getClass());
 

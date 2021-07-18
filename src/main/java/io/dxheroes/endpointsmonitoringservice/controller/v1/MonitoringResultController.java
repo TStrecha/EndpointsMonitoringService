@@ -1,6 +1,7 @@
 package io.dxheroes.endpointsmonitoringservice.controller.v1;
 
 import io.dxheroes.endpointsmonitoringservice.Utils;
+import io.dxheroes.endpointsmonitoringservice.constant.ControllerConstants;
 import io.dxheroes.endpointsmonitoringservice.dto.MonitoringResultDTO;
 import io.dxheroes.endpointsmonitoringservice.service.MonitoringResultService;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +24,7 @@ public class MonitoringResultController {
     @ApiOperation(value = "Get last monitoring results", notes = "Gets last monitoring results for particular monitored endpoint based on id in path limited by count.", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MonitoringResultDTO> getLastMonitoringResultsForMonitoredEndpoint(@PathVariable("count") Integer count,
                                                                                   @PathVariable("monitored-endpoint-id") Long monitoredEndpointId,
-                                                                                  @RequestHeader("access-token") String accessToken){
+                                                                                  @RequestHeader(ControllerConstants.ACCESS_TOKEN_HEADER_NAME) String accessToken){
         Utils.validateAccessToken(accessToken);
 
         return monitoringResultService.getLastMonitoringResultsForMonitoredEndpoint(count, monitoredEndpointId, accessToken);
@@ -34,7 +35,7 @@ public class MonitoringResultController {
     public List<MonitoringResultDTO> getMonitoringResultsWithinAnInterval(@PathVariable("monitored-endpoint-id")  Long monitoredEndpointId,
                                                                                   @PathVariable("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)OffsetDateTime from,
                                                                                   @PathVariable("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime to,
-                                                                                  @RequestHeader("access-token") String accessToken){
+                                                                                  @RequestHeader(ControllerConstants.ACCESS_TOKEN_HEADER_NAME) String accessToken){
         Utils.validateAccessToken(accessToken);
 
         return monitoringResultService.getMonitoringResultsWithinAnInterval(monitoredEndpointId, from, to, accessToken);
