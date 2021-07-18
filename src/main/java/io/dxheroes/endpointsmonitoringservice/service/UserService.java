@@ -103,7 +103,15 @@ public class UserService {
         }
     }
 
-    public void deleteByAccessToken(String accessToken) {
-        userRepository.deleteByAccessToken(accessToken);
+    public UserDTO getUserByAccessToken(String accessToken) {
+        Optional<UserEntity> userOptional = userRepository.getByAccessToken(accessToken);
+
+        if(!userOptional.isPresent()){
+            ValidationErrorDTO validationErrorDTO = ValidationErrorDTO.builder().propertyPath("accessToken")
+                    .invalidValue(accessToken)
+                    .errorCode(ValidationErrorConstants.USER_NOT_FOUND).build();
+            throw new ValidationException(validationErrorDTO);
+        }
+        return userOptional.map(userMapper::toDTO).orElse(null);
     }
 }

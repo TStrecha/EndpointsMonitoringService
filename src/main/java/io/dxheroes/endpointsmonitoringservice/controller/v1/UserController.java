@@ -15,6 +15,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/{accessToken}")
+    @ApiOperation(value = "Get user by access token", notes = "Returns more information about user based on their access token.", produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserDTO getUserByAccessToken(@PathVariable(name = "accessToken") String accessToken){
+        Utils.validateAccessToken(accessToken);
+
+        return userService.getUserByAccessToken(accessToken);
+    }
+
     @PostMapping
     @ApiOperation(value = "Create user", notes = "Creates user from DTO. When userDTO.accessToken is null, creates a random UUID as accessToken.", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO createUser(@RequestBody UserDTO userDTO){

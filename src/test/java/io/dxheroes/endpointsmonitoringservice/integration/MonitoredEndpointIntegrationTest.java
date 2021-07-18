@@ -24,93 +24,21 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Transactional
-public class BasicIntegrationTest {
-
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private MonitoringResultService monitoringResultService;
-
-    private final String ACCESS_TOKEN = "dcb20f8a-5657-4f1b-9f7f-ce65739b359e";
-
-    @Test
-    @Order(1)
-    void user_createNew_success() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setAccessToken(ACCESS_TOKEN);
-        userDTO.setUsername("Unit test");
-        userDTO.setEmail("test@example.com");
-
-        UserDTO result = userService.createUser(userDTO);
-
-        assertEquals(result.getAccessToken(), ACCESS_TOKEN);
-        assertEquals(result.getEmail(), userDTO.getEmail());
-        assertEquals(result.getUsername(), userDTO.getUsername());
-        assertNotNull(result.getId());
-    }
-
-    @Test
-    @Order(2)
-    void user_createNew_fail() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername("Unit test 2");
-        userDTO.setEmail("test2.c");
-        boolean failed = false;
-
-        try{
-            userService.createUser(userDTO);
-        } catch (ValidationException ex){
-            assertEquals(1, ex.getErrors().size());
-            assertEquals(ValidationErrorConstants.INVALID_EMAIL, ex.getErrors().get(0).getErrorCode());
-            failed = true;
-        }
-        assertTrue(failed);
-    }
-
-    @Test
-    @Order(3)
-    void user_edit_success() {
-        UserEntity user = createUser();
-        UserDTO userDTO = new UserDTO();
-        userDTO.setAccessToken(ACCESS_TOKEN);
-        userDTO.setUsername("Unit test edited");
-        userDTO.setEmail("editedtest@example.com");
-
-        userDTO = userService.editUser(userDTO, ACCESS_TOKEN);
-
-        assertEquals(userDTO.getAccessToken(), ACCESS_TOKEN);
-        assertEquals(userDTO.getEmail(), userDTO.getEmail());
-        assertEquals(userDTO.getUsername(), userDTO.getUsername());
-        assertNotNull(userDTO.getId());
-    }
-
-    @Test
-    @Order(4)
-    void user_edit_fail() {
-        UserEntity user = createUser();
-        UserDTO userDTO = new UserDTO();
-        userDTO.setAccessToken(ACCESS_TOKEN);
-        userDTO.setUsername("Unit test second edit");
-
-        try {
-            userDTO = userService.editUser(userDTO, "93f39e2f-80de-4033-99ee-249d92736a20");
-        } catch (ValidationException ex){
-            assertEquals(1, ex.getErrors().size());
-            assertEquals(ValidationErrorConstants.CHANGE_OF_OTHER_USER, ex.getErrors().get(0).getErrorCode());
-        }
-    }
+public class MonitoredEndpointIntegrationTest {
 
     @Autowired
     private MonitoredEndpointService monitoredEndpointService;
     @Autowired
     private MonitoredEndpointRepository monitoredEndpointRepository;
+    @Autowired
+    private MonitoringResultService monitoringResultService;
+    @Autowired
+    private UserRepository userRepository;
 
     private Integer taskCount = 0;
 
     @Test
-    @Order(5)
+    @Order(0)
     void endpoint_createNew_success() {
         UserEntity user = createUser();
         taskCount = monitoredEndpointService.getMonitoringResultService().getTasks().size();
@@ -120,11 +48,11 @@ public class BasicIntegrationTest {
         monitoredEndpointDTO.setStatus(Status.ACTIVE);
         monitoredEndpointDTO.setMonitoredIntervalInMillis(30 * 1000);
 
-        MonitoredEndpointDTO result = monitoredEndpointService.createMonitoredEndpoint(monitoredEndpointDTO, ACCESS_TOKEN);
+        MonitoredEndpointDTO result = monitoredEndpointService.createMonitoredEndpoint(monitoredEndpointDTO, UserIntegrationTest.ACCESS_TOKEN);
 
         assertNotNull(result.getId());
         assertNotNull(result.getOwner());
-        assertEquals(result.getOwner().getAccessToken(), ACCESS_TOKEN);
+        assertEquals(result.getOwner().getAccessToken(), UserIntegrationTest.ACCESS_TOKEN);
         assertEquals(result.getUrl(), monitoredEndpointDTO.getUrl());
         assertEquals(result.getMonitoredIntervalInMillis(), monitoredEndpointDTO.getMonitoredIntervalInMillis());
         assertEquals(result.getName(), monitoredEndpointDTO.getName());
@@ -134,7 +62,7 @@ public class BasicIntegrationTest {
     }
 
     @Test
-    @Order(6)
+    @Order(1)
     void endpoint_createNew_fail() {
         UserEntity user = createUser();
         MonitoredEndpointDTO monitoredEndpointDTO = new MonitoredEndpointDTO();
@@ -144,7 +72,7 @@ public class BasicIntegrationTest {
         boolean failed = false;
 
         try {
-            monitoredEndpointService.createMonitoredEndpoint(monitoredEndpointDTO, ACCESS_TOKEN);
+            monitoredEndpointService.createMonitoredEndpoint(monitoredEndpointDTO, UserIntegrationTest.ACCESS_TOKEN);
         } catch (ValidationException ex){
             assertEquals(2, ex.getErrors().size());
             for(ValidationErrorDTO error : ex.getErrors()){
@@ -157,7 +85,7 @@ public class BasicIntegrationTest {
     }
 
     @Test
-    @Order(7)
+    @Order(2)
     void endpoint_edit_success() {
         MonitoredEndpointEntity monitoredEndpointEntity = createMonitoredEndpoint();
         MonitoredEndpointDTO monitoredEndpointDTO = new MonitoredEndpointDTO();
@@ -166,11 +94,11 @@ public class BasicIntegrationTest {
         monitoredEndpointDTO.setStatus(Status.INACTIVE);
         monitoredEndpointDTO.setMonitoredIntervalInMillis(50 * 1000);
 
-        MonitoredEndpointDTO result = monitoredEndpointService.editMonitoredEndpoint(monitoredEndpointEntity.getId(), monitoredEndpointDTO, ACCESS_TOKEN);
+        MonitoredEndpointDTO result = monitoredEndpointService.editMonitoredEndpoint(monitoredEndpointEntity.getId(), monitoredEndpointDTO, UserIntegrationTest.ACCESS_TOKEN);
 
         assertNotNull(result.getId());
         assertNotNull(result.getOwner());
-        assertEquals(result.getOwner().getAccessToken(), ACCESS_TOKEN);
+        assertEquals(result.getOwner().getAccessToken(), UserIntegrationTest.ACCESS_TOKEN);
         assertEquals(result.getUrl(), monitoredEndpointDTO.getUrl());
         assertEquals(result.getMonitoredIntervalInMillis(), monitoredEndpointDTO.getMonitoredIntervalInMillis());
         assertEquals(result.getName(), monitoredEndpointDTO.getName());
@@ -178,7 +106,7 @@ public class BasicIntegrationTest {
     }
 
     @Test
-    @Order(8)
+    @Order(3)
     void endpoint_edit_fail() {
         MonitoredEndpointEntity monitoredEndpointEntity = createMonitoredEndpoint();
 
@@ -199,26 +127,25 @@ public class BasicIntegrationTest {
     }
 
     @Test
-    @Order(9)
+    @Order(4)
     void endpoint_remove_success() {
         MonitoredEndpointEntity monitoredEndpointEntity = createMonitoredEndpoint();
         monitoringResultService.startTask(monitoredEndpointEntity);
         taskCount = monitoredEndpointService.getMonitoringResultService().getTasks().size();
-        monitoredEndpointService.deleteMonitoredEndpoint(monitoredEndpointEntity.getId(), ACCESS_TOKEN);
+        monitoredEndpointService.deleteMonitoredEndpoint(monitoredEndpointEntity.getId(), UserIntegrationTest.ACCESS_TOKEN);
 
         assertEquals(taskCount - 1, monitoredEndpointService.getMonitoringResultService().getTasks().size());
-        assertEquals(0, monitoredEndpointService.getMonitoredEndpointsForAccessToken(ACCESS_TOKEN).size());
+        assertEquals(0, monitoredEndpointService.getMonitoredEndpointsForAccessToken(UserIntegrationTest.ACCESS_TOKEN).size());
     }
 
     private UserEntity createUser(){
         UserEntity userEntity = new UserEntity();
-        userEntity.setAccessToken(ACCESS_TOKEN);
+        userEntity.setAccessToken(UserIntegrationTest.ACCESS_TOKEN);
         userEntity.setUsername("Unit test");
         userEntity.setEmail("test@example.com");
 
         return userRepository.saveAndFlush(userEntity);
     }
-
 
     private MonitoredEndpointEntity createMonitoredEndpoint(){
         MonitoredEndpointEntity monitoredEndpointEntity = new MonitoredEndpointEntity();
@@ -229,5 +156,4 @@ public class BasicIntegrationTest {
 
         return monitoredEndpointRepository.saveAndFlush(monitoredEndpointEntity);
     }
-
 }
