@@ -2,7 +2,6 @@ package io.dxheroes.endpointsmonitoringservice.service;
 
 import io.dxheroes.endpointsmonitoringservice.Utils;
 import io.dxheroes.endpointsmonitoringservice.constant.Status;
-import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.EntityNotFoundException;
 import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.ValidationErrorConstants;
 import io.dxheroes.endpointsmonitoringservice.controller.v1.exception.ValidationException;
 import io.dxheroes.endpointsmonitoringservice.dto.MonitoredEndpointDTO;
@@ -40,8 +39,12 @@ public class MonitoredEndpointService {
 
     public MonitoredEndpointDTO createMonitoredEndpoint(MonitoredEndpointDTO monitoredEndpointDTO, String accessToken) {
         Optional<UserEntity> userEntityOptional = userRepository.getByAccessToken(accessToken);
+
         if(!userEntityOptional.isPresent()){
-            throw new EntityNotFoundException(UserEntity.class, "Access Token", accessToken);
+            ValidationErrorDTO validationErrorDTO = ValidationErrorDTO.builder().propertyPath("accessToken")
+                    .invalidValue(accessToken)
+                    .errorCode(ValidationErrorConstants.USER_NOT_FOUND).build();
+            throw new ValidationException(validationErrorDTO);
         }
 
         validateMonitoredEndpoint(monitoredEndpointDTO);
